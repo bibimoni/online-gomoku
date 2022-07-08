@@ -4,6 +4,10 @@ const socket = io('http://localhost:8080');
 socket.on('init', handleInit);
 const gameScreen = document.getElementById('gameScreen');
 let canvas, c;
+const PATTERN = 3;
+const winLine = 3;
+GRID_WIDTH = GRID_HEIGHT = 600
+init(); 
 
 const gameState = {
     player : {
@@ -20,16 +24,30 @@ function init() {
     c = canvas.getContext('2d');
 
     canvas.width = canvas.height = 600;
-    c.fillStyle = BG_Color;
-    c.fillRect(0, 0, canvas.width, canvas.height);
 
     document.addEventListener('keydown', (e) => {
         console.log(e.keyCode);
     });
 }
 
-init(); 
-
 function handleInit(msg) {
     console.log(msg)
+}
+let board = new Board({
+    boardWidth: PATTERN, 
+    boardHeight: PATTERN,
+    imageSrc: './img/XO.png',
+    requireLineLength: winLine
+})
+board.initializeBoard();
+board.Board = [
+    [0, 0, 0],
+    [0, 0, 1],
+    [2, 0, 1]
+]
+board.drawBoard();
+animationLoop();
+function animationLoop() {
+    window.requestAnimationFrame(animationLoop);
+    board.update();
 }

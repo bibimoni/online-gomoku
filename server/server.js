@@ -1,4 +1,9 @@
-const io = require('socket.io')();
+const io = require('socket.io')({
+    cors : {
+        origin: "*"
+    }
+});
+const cors = require('cors');
 
 io.on('connection', client => {
     client.emit('init', { data: 'hello world'});
