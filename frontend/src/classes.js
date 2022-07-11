@@ -29,7 +29,6 @@ class Board {
                 c.fillRect(i * GRID_WIDTH / this.width, j * GRID_HEIGHT / this.height, GRID_WIDTH / this.width, GRID_HEIGHT / this.height)
             }
         }
-
     }
     draw() {
         const boardX = GRID_WIDTH;
@@ -74,8 +73,6 @@ class Board {
         }
     }
     drawWinLine() {
-        console.log({ x: this.win_r1, y: this.win_c1 },
-            { x: this.win_r2, y: this.win_c2 })
         const GRID_SIZE = (GRID_WIDTH / this.width);
         //horizontal
         c.fillStyle = 'green';
@@ -165,12 +162,27 @@ class Board {
     legalSquare(r, c) {
         return r < this.width && c < this.width && r >= 0 && c >= 0;
     }
-    update() {
+    //take the game state object and change it to 2d array board position
+    handleGameState(gameState) {
+        let tie = 0;
+        // if the game is not ended place the tie depends on the player 
+        (gameState.player1 && this.win_r1 === -1) ? tie = 1 : tie = 2;
+        this.board[gameState.pos.x][gameState.pos.y] = tie;   
+    }
+
+    update(gameState) {
+        this.handleGameState(gameState)
         this.drawWinLine();
         this.draw();
         this.checkDraw();
     }
 }
+
+
+
+
+
+
 class Player {
 
     constructor({ win, firstTurn, id, boardWidth, boardHeight }) {
