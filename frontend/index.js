@@ -1,22 +1,23 @@
 const BG_Color = '#35393b'
-
 const socket = io('http://localhost:8080');
+
 socket.on('init', handleInit);
+socket.on('gameState', handleGameState)
+
 const gameScreen = document.getElementById('gameScreen');
 let canvas, c;
-const PATTERN = 3;
-const winLine = 3;
+const PATTERN = 30;
+const winLine = 5;
 GRID_WIDTH = GRID_HEIGHT = 600
+
 init(); 
 
 const gameState = {
-    player : {
-        pos : {
-            x : 3,
-            y : 10
-        }
+    pos : {
+        x : -1,
+        y : -1
     },
-    gridSize : 15
+    player1 : true,    
 }
 
 function init() {
@@ -28,11 +29,12 @@ function init() {
     document.addEventListener('keydown', (e) => {
         console.log(e.keyCode);
     });
-}
+}   
 
 function handleInit(msg) {
     console.log(msg)
 }
+
 let board = new Board({
     boardWidth: PATTERN, 
     boardHeight: PATTERN,
@@ -40,14 +42,12 @@ let board = new Board({
     requireLineLength: winLine
 })
 board.initializeBoard();
-board.Board = [
-    [0, 0, 0],
-    [0, 0, 1],
-    [2, 0, 1]
-]
+
 board.drawBoard();
-animationLoop();
-function animationLoop() {
-    window.requestAnimationFrame(animationLoop);
-    board.update();
+
+function handleGameState() {
+    gameState = JSON.parse(gameState);
+    requestAnimationFrame(() => {
+        board.update(gameState);
+    }) 
 }
